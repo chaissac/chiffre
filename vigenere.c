@@ -30,12 +30,12 @@
 #include <ctype.h>
 
 //
-char* chiffreTexteVigenere(char tab[10000],char k[1000]){ 
+wchar_t* chiffreTexteVigenere(wchar_t tab[10000],wchar_t k[1000]){
     int key;
     int j;
      for(int i=0;i<=10000;i++){
         if(isalnum(tab[i])){
-            j = i%strlen(k);
+            j = i%wcslen(k);
             key=k[j]-97;
             for(int p = 1;p<=key; p++){
                 if(tab[i]=='Z'){
@@ -50,16 +50,15 @@ char* chiffreTexteVigenere(char tab[10000],char k[1000]){
             tab[i]=tab[i];
         }
     }
-    char *r = tab;
     return tab;
 }
 
-char* dechiffreTexteVigenere(char tab[10000],char k[1000]){ 
+wchar_t* dechiffreTexteVigenere(wchar_t tab[10000],wchar_t k[1000]){
     int key;
     int j;
      for(int i=0;i<=10000;i++){
         if(isalnum(tab[i])){
-            j = i%strlen(k);
+            j = i%wcslen(k);
             key=k[j]-97;
             for(int p = 1;p<=key; p++){
                 if(tab[i]=='A'){
@@ -74,6 +73,5 @@ char* dechiffreTexteVigenere(char tab[10000],char k[1000]){
             tab[i]=tab[i];
         }
     }
-    char *r = tab;
     return tab;
 }

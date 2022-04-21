@@ -24,9 +24,11 @@
 *                                                                             *
 ******************************************************************************/
 
+// Lit un entier borné
+int readInt(wchar_t message[10000], int valMin,int valMax);
+// Normalise le texte
+bool normText(wchar_t tab[10000], char res[10000]);
 //verif caratere special
-bool verifTexte(char tab[10000]);
+bool verifTexte(wchar_t tab[10000]);
 //verif cle Vigenere
-bool verifCleV(char tab[10000]);
-//verif cle cesar
-bool verifCleC(int cle);
+bool verifCle(wchar_t tab[10000]);
