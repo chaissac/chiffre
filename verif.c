@@ -29,7 +29,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
-#include <locale.h>
+#include <wchar.h>
 
 // Lit un entier borné
 int readInt(wchar_t *message, int valMin, int valMax)
@@ -39,7 +39,7 @@ int readInt(wchar_t *message, int valMin, int valMax)
     while (rep < valMin || rep > valMax)
     {
         wprintf(message);
-        fflush(stdin);
+        while ((getchar()) != '\n');
         scanf("%[^\n]s", reps);
         if (reps[0] == '0')
         {

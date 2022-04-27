@@ -23,5 +23,4 @@
  *  Nom du fichier : cesar.h                                                   *
  *                                                                             *
  ******************************************************************************/
-char *chiffreTexteCesar(char *tab, int k);
-char *dechiffreTexteCesar(char *tab, int k);
+char *texteCesar(char *tab, int key, int sens);

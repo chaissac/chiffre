@@ -23,10 +23,8 @@
  *  Nom du fichier : vigenere.c                                                *
  *                                                                             *
  ******************************************************************************/
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 #include <ctype.h>
 
 char *texteVigenere(char *tab, char *key, int sens)

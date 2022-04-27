@@ -30,6 +30,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <wchar.h>
 #include "cesar.h"
 #include "vigenere.h"
 #include "verif.h"
@@ -47,7 +48,7 @@ void main()
 
     // Initialisation du tableau et saisie du text
     wprintf(L"\nTapez votre message crypté ou à décrypter :\n> ");
-    fflush(stdin);
+
     // fgetws(tab1, SIZE, stdin);
     scanf("%[^\n]s", tab);
 
@@ -71,12 +72,12 @@ void main()
         if (rep2 == 1)
         {
             fprintf(fichier, "Chiffrement César avec Clef=%d\n", key);
-            wprintf(L"Message chiffré : %s\n", chiffreTexteCesar(text, key));
+            wprintf(L"Message chiffré : %s\n", texteCesar(text, key,1));
         }
         else // forcément rep2=2
         {
             fprintf(fichier, "Dechiffrement Cesar avec Clef=%d\n", key);
-            wprintf(L"Message déchiffré : %s\n", dechiffreTexteCesar(text, key));
+            wprintf(L"Message déchiffré : %s\n", texteCesar(text, key,-1));
         }
     }
     else // forcément rep = 2
@@ -84,7 +85,7 @@ void main()
         char key[SIZE];
         int k;
         wprintf(L"Saisir la clé.\n");
-        fflush(stdin);
+        
         // fgetws(tab1, SIZE, stdin);
         tab[0] = '\0';
         scanf("%[^\n]s", tab);
