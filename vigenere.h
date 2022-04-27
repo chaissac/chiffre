@@ -23,5 +23,4 @@
 *  Nom du fichier : vigenere.h                                                *
 *                                                                             *
 ******************************************************************************/
-wchar_t* chiffreTexteVigenere(wchar_t tab[10000],wchar_t k[1000]);
-wchar_t* dechiffreTexteVigenere(wchar_t tab[10000],wchar_t k[1000]);
+char *texteVigenere(char *tab, char *key, int sens);

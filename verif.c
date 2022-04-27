@@ -23,104 +23,101 @@
  *  Nom du fichier : verif.c                                                   *
  *                                                                             *
  ******************************************************************************/
+#include "defs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <locale.h>
 
 // Lit un entier borné
-int readInt(wchar_t message[10000], int valMin, int valMax)
+int readInt(wchar_t *message, int valMin, int valMax)
 {
     int rep = -1;
-    wchar_t reps[10000];
+    char reps[SIZE];
     while (rep < valMin || rep > valMax)
     {
         wprintf(message);
-        scanf("%s", reps);
-        rep = wcstol(reps, NULL, 10);
+        fflush(stdin);
+        scanf("%[^\n]s", reps);
+        if (reps[0] == '0')
+        {
+            printf("\nExit !\n");
+            exit(0);
+        }
+        rep = strtol(reps, NULL, 10);
     }
     return rep;
 }
 
 // Normalise le texte
-bool normText(wchar_t tab[10000], char res[10000])
+char *normText(char *tab, char *res, bool strict)
 {
-    wchar_t norm[10000] = L"";
-    wchar_t curr;
-    wchar_t new;
-    for (int i = 0; i <= wcslen(tab); i++)
+    char curr;
+    char new;
+    int i = 0;
+    // res[0] = '\0';
+    while (tab[i] != '\0')
     {
-        curr = tab[i] ;
-        if (wcschr(L"aàâäÀÂÄ", curr) != NULL)
+        curr = tab[i];
+        if (curr == -57 || curr == -58 || curr == -73 || curr == -74 || curr == -75 || curr == -96 || curr == -113 || curr == -114 || curr == -122 || curr == -123 || curr == -124 || curr == -125)
         {
-            new = L'C';
+            new = 'A';
         }
-        else if (wcschr(L"eéèêëÉÈÊË", curr) != NULL)
+        else if (curr == -110 || curr == -111)
         {
-            new = L'E';
+            new = 'A';
         }
-        else if (wcschr(L"iìîïÌÎÏ", curr) != NULL)
+        else if (curr == -44 || curr == -45 || curr == -46 || curr == -112 || curr == -118 || curr == -119 || curr == -120 || curr == -126)
         {
-            new = L'I';
+            new = 'E';
         }
-        else if (wcschr(L"oòôöõÒÔÖÕ", curr) != NULL)
+        else if (curr == -34 || curr == -40 || curr == -41 || curr == -42 || curr == -95 || curr == -115 || curr == -116 || curr == -117)
         {
-            new = L'O';
+            new = 'I';
         }
-        else if (wcschr(L"uùûüÙÛÜ", curr) != NULL)
+        else if (curr == -27 || curr == -28 || curr == -29 || curr == -30 || curr == -32 || curr == -48 || curr == -94 || curr == -101 || curr == -103 || curr == -107 || curr == -108 || curr == -109)
         {
-            new = L'U';
+            new = 'O';
         }
-        else if (wcschr(L"yÿ", curr) != NULL)
+        else if (curr == -21 || curr == -22 || curr == -23 || curr == -102 || curr == -105 || curr == -106 || curr == -93 || curr == -127)
         {
-            new = L'Y';
+            new = 'U';
         }
-        else if (wcschr(L"cçÇ", curr) != NULL)
+        else if (curr == -19 || curr == -20 || curr == -104)
         {
-            new = L'C';
+            new = 'Y';
         }
-        else if (wcschr(L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ", curr) == NULL)
+        else if (curr == -121 || curr == -128)
         {
-            new = L'_';
+            new = 'C';
+        }
+        else if (curr == -47)
+        {
+            new = 'D';
+        }
+        else if (curr == -91 || curr == -92)
+        {
+            new = 'N';
+        }
+        else if (curr >= 'a' && curr <= 'z')
+        {
+            new = toupper(curr);
         }
         else
         {
             new = curr;
         }
-        if (new != L'_') {
-            wcsncat(norm, &new, 1);
-        }
-        wprintf(L"\nFrom : %d/%c To : %d/%c",curr,curr,new,new);
-    }
-
-    wprintf(L"\nNormalisation : \n> %s\n> %s\n\n", tab, norm);
-    return true;
-}
-
-// Verif caractere special
-bool verifTexte(wchar_t tab[10000])
-{
-    char verifTab[67] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789'-,() ";
-    for (int i = 0; i <= wcslen(tab); i++)
-    {
-        if (strchr(verifTab, tab[i]) == NULL)
+        // printf("\nFrom : %d/%c To : %d/%c", curr, curr, new, new);
+        if (new != '_')
         {
-            // return false;
+            if (!strict || (new >= 'A' && new <= 'Z'))
+            {
+                strncat(res, &new, 1);
+            }
         }
+        i++;
     }
-    return true;
-}
-
-bool verifCle(wchar_t tab[10000])
-{
-    char verifTab[53] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ ";
-    for (int i = 0; i <= wcslen(tab); i++)
-    {
-        if (strchr(verifTab, tab[i]) == NULL)
-        {
-            return false;
-        }
-    }
-    return true;
+    return res;
 }

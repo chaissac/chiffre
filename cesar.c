@@ -31,24 +31,26 @@
 #include <ctype.h>
 
 // chiffrage Cesar
-wchar_t *chiffreTexteCesar(wchar_t tab[10000], int key)
+char *chiffreTexteCesar(char *tab, int key)
 {
-    for (int i = 0; i <= 10000; i++)
+    int i = 0;
+    while (tab[i] != '\0')
     {
         if (tab[i] >= 'A' && tab[i] <= 'Z')
         {
-            tab[i] = (tab[i] - 'A' + key) % 26 + 'A';
+            tab[i] = (tab[i] - 'A' + 26 + key) % 26 + 'A';
         }
         else if (tab[i] >= '0' && tab[i] <= '9')
         {
-            tab[i] = (tab[i] - '0' + key) % 10 + '0';
+            tab[i] = (tab[i] - '0' + 10 + key) % 10 + '0';
         }
+        i++;
     }
     return tab;
 }
 
 // Dechiffage Cesar
-wchar_t *dechiffreTexteCesar(wchar_t tab[10000], int k)
+char *dechiffreTexteCesar(char *tab, int k)
 {
     return chiffreTexteCesar(tab, -k);
 }

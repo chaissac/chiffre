@@ -23,7 +23,8 @@
  *  Nom du fichier : main.c                                                    *
  *                                                                             *
  ******************************************************************************/
-
+#include "defs.h"
+#include <locale.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,71 +37,72 @@
 
 void main()
 {
-    wchar_t tab1[10000];
-    wchar_t tab2[10000];
-    // _setmode(_fileno(stdout), _O_U8TEXT);
+    char *locale = setlocale(LC_ALL, "");
+
+    printf("\nLocale : %s\n", locale);
 
     FILE *fichier = NULL;
-    // Initialisation du tableau et saisie du text
-    wprintf(L"\nTapez votre message (sans caractere spécial) :\n> ");
-    scanf("%[^\n]s", tab1);
+    char tab[SIZE];
+    char text[SIZE] = "";
 
-    for (int j = 0; j <= wcslen(tab1); j++)
-    {
-        tab2[j] = toupper(tab1[j]);
-    }
-    // verification de la validite du texte saisi
-    if (verifTexte(tab2) == false)
-    {
-        wprintf(L"Erreur dans le texte\n");
-        exit(1);
-    }
-    else
-    {
-        wprintf(L"Texte valide\n");
-    }
-    // normText(tab2);
+    // Initialisation du tableau et saisie du text
+    wprintf(L"\nTapez votre message crypté ou à décrypter :\n> ");
+    fflush(stdin);
+    // fgetws(tab1, SIZE, stdin);
+    scanf("%[^\n]s", tab);
+
+    normText(tab, text, false);
+
+    wprintf(L"\nTexte normalisé : %s\n", text);
+
     fichier = fopen("resultat.txt", "w");
-    fprintf(fichier, "Texte saisi : %s\n", tab2);
+    fprintf(fichier, "Texte saisi : %s\n", text);
+
     // choix de l'algorithme
-    int rep = readInt(L"\nChoisir la methode de chiffrement :\n 1-Cesar\n 2-Vigenere\n> ", 1, 2);
+    int rep1 = readInt(L"\nChoisir la méthode de chiffrement :\n 1-César\n 2-Vigénère\n> ", 1, 2);
+
     // choix pour chiffrer ou dechiffre le message saisi
-    int rep2 = readInt(L"\nTaper 1 pour chiffrer votre message, et 2 pour le dechiffrer.\n> ", 1, 2);
+    int rep2 = readInt(L"\nTaper 1 pour chiffrer votre message, et 2 pour le déchiffrer.\n> ", 1, 2);
 
     // déroulé du programme
-    if (rep == 1)
+    if (rep1 == 1)
     {
-        int k = readInt(L"\nSaisir la valeur de la clef Cesar (entre 1 et 25)\n> ", 1, 25);
+        int key = readInt(L"\nSaisir la valeur de la clef Cesar (entre 1 et 25)\n> ", 1, 25);
         if (rep2 == 1)
         {
-            fprintf(fichier, "Chiffrement Cesar avec Clef=%d\n",k);
-            wprintf(L"Message chiffré : %s\n", chiffreTexteCesar(tab2, k));
-
+            fprintf(fichier, "Chiffrement César avec Clef=%d\n", key);
+            wprintf(L"Message chiffré : %s\n", chiffreTexteCesar(text, key));
         }
         else // forcément rep2=2
         {
-            fprintf(fichier, "Dechiffrement Cesar avec Clef=%d\n",k);
-            wprintf(L"Message déchiffré : %s\n", dechiffreTexteCesar(tab2, k));
+            fprintf(fichier, "Dechiffrement Cesar avec Clef=%d\n", key);
+            wprintf(L"Message déchiffré : %s\n", dechiffreTexteCesar(text, key));
         }
     }
-    else // forcément rep1 = 2
+    else // forcément rep = 2
     {
-        wchar_t cle[1000];
+        char key[SIZE];
         int k;
         wprintf(L"Saisir la clé.\n");
-        scanf("%s", cle);
+        fflush(stdin);
+        // fgetws(tab1, SIZE, stdin);
+        tab[0] = '\0';
+        scanf("%[^\n]s", tab);
+        key[0] = '\0';
+        normText(tab, key, true);
+        wprintf(L"\nClé normalisée : %s\n", key);
         if (rep2 == 1)
         {
-            fprintf(fichier, "Chiffrement Vigenere avec Clef = %s\n",cle);
-            printf("Message chiffre : %s\n", chiffreTexteVigenere(tab2, cle));
+            fprintf(fichier, "Chiffrement Vigenere avec Clef = %s\n", key);
+            printf("Message chiffre : %s\n", texteVigenere(text, key, 1));
         }
         else // forcément rep2=2
         {
-            fprintf(fichier, "Dechiffrement Vigenere avec Clef = %s\n",cle);
-            printf("Message dechiffre : %s\n", dechiffreTexteVigenere(tab2, cle));
+            fprintf(fichier, "Dechiffrement Vigenere avec Clef = %s\n", key);
+            printf("Message dechiffre : %s\n", texteVigenere(text, key, -1));
         }
     }
-    fprintf(fichier, "Resultat : %s\n", tab2);
+    fprintf(fichier, "Resultat : %s\n", text);
     fclose(fichier);
     printf("Retrouvez le resultat dans le fichier : resultat.txt \n");
 }
